@@ -43,3 +43,44 @@ function getRemainder(code, weight) {
 
   return sum % 11;
 }
+
+export function getGenderFromGenderDigit(genderDigit) {
+  const genderDigits = {
+    1: 'MALE',
+    2: 'FEMALE',
+    3: 'MALE',
+    4: 'FEMALE',
+    5: 'MALE',
+    6: 'FEMALE',
+    0: 'UNKNOWN',
+  };
+
+  return genderDigits[genderDigit];
+}
+
+export function getDobFromPersonalCode(personalCode) {
+  const genderDigit = personalCode.slice(0, 1);
+  const dobDigits = personalCode.slice(1, 7);
+  const year = getFullYear(genderDigit, dobDigits.slice(0, 2).join(''));
+  const month = dobDigits.slice(2, 4).join('');
+  const day = dobDigits.slice(4, 6).join('');
+
+  return `${day}.${month}.${year}`;
+}
+
+function getFullYear(genderDigit, year) {
+  genderDigit = parseInt(genderDigit);
+  if ([1, 2].includes(genderDigit)) {
+    return `18${year}`;
+  }
+
+  if ([3, 4].includes(genderDigit)) {
+    return `19${year}`;
+  }
+
+  if ([5, 6].includes(genderDigit)) {
+    return `20${year}`;
+  }
+
+  return year;
+}

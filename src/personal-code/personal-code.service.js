@@ -1,8 +1,19 @@
-import { Injectable, Dependencies } from '@nestjs/common';
+import {
+  Injectable,
+  Dependencies,
+  NotFoundException,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { getModelToken } from '@nestjs/sequelize';
 import { PersonalCode } from './personal-code.model';
 import { Op } from 'sequelize';
-import { getGenderDigits, getControlNumber } from './helpers';
+import {
+  getGenderDigits,
+  getControlNumber,
+  getGenderFromGenderDigit,
+  getDobFromPersonalCode,
+} from './helpers';
 
 @Injectable()
 @Dependencies(getModelToken(PersonalCode))
@@ -12,16 +23,18 @@ export class PersonalCodeService {
   }
   async verifyPersonalCode(code) {
     console.log(code);
-    // console.log(await this.personalCodeModel.findAll());
-    // const existingCode = await this.personalCodeModel.findOne({
-    //   where: { code },
-    // });
+    const personalCode = code.split('');
+    if (personalCode.length < 11) {
+      throw new HttpException('Invalid code', HttpStatus.BAD_REQUEST);
+    }
 
-    // if (!existingCode) {
-    //   throw new NotFoundException('Personal code not found');
-    // }
+    const existingCode = await this.personalCodeModel.findOne({
+      where: { code },
+    });
 
-    // Add additional validation logic if needed
+    if (!existingCode) {
+      throw new NotFoundException('Personal code not found');
+    }
 
     return true;
   }
@@ -49,5 +62,13 @@ export class PersonalCodeService {
     await this.personalCodeModel.create({ code: personalCode });
 
     return personalCode;
+  }
+  getPersonalCodeDetails(code) {
+    const personalCode = code.split('');
+    const gender = getGenderFromGenderDigit(personalCode.slice(0, 1));
+    const dob = getDobFromPersonalCode(personalCode);
+    const serialNumber = personalCode.slice(7, 10).join('');
+
+    return { gender, dob, serialNumber };
   }
 }

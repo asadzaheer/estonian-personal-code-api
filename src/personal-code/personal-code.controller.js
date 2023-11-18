@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Dependencies, Bind, Param, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Dependencies,
+  Bind,
+  Param,
+  Body,
+} from '@nestjs/common';
 import { PersonalCodeService } from './personal-code.service';
 
 @Controller('personal-code')
@@ -12,7 +20,10 @@ export class PersonalCodeController {
   @Bind(Body())
   async generatePersonalCode(body) {
     const { gender, dob } = body;
-    const newPersonalCode = await this.personalCodeService.generatePersonalCode(gender, dob);
+    const newPersonalCode = await this.personalCodeService.generatePersonalCode(
+      gender,
+      dob,
+    );
     return `Generated Personal Code: ${newPersonalCode}`;
   }
 
@@ -20,8 +31,9 @@ export class PersonalCodeController {
   @Bind(Param())
   async verifyPersonalCode(params) {
     const { code } = params;
-    console.log(code);
     await this.personalCodeService.verifyPersonalCode(code);
-    return `This action returns a ${code}`;
+    const { gender, dob, serialNumber } =
+      await this.personalCodeService.getPersonalCodeDetails(code);
+    return `Personal code is valid. Gender: ${gender}, DoB: ${dob}, Serial Number: ${serialNumber}`;
   }
 }
