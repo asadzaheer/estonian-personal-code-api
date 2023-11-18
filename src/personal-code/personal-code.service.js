@@ -24,7 +24,7 @@ export class PersonalCodeService {
   async verifyPersonalCode(code) {
     console.log(code);
     const personalCode = code.split('');
-    if (personalCode.length < 11) {
+    if (personalCode.length < 11 || personalCode.length > 11) {
       throw new HttpException('Invalid code', HttpStatus.BAD_REQUEST);
     }
 
