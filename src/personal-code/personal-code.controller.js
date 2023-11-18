@@ -1,4 +1,4 @@
-import { Controller, Get, Dependencies, Bind, Param } from '@nestjs/common';
+import { Controller, Get, Post, Dependencies, Bind, Param, Body } from '@nestjs/common';
 import { PersonalCodeService } from './personal-code.service';
 
 @Controller('personal-code')
@@ -6,6 +6,14 @@ import { PersonalCodeService } from './personal-code.service';
 export class PersonalCodeController {
   constructor(personalCodeService) {
     this.personalCodeService = personalCodeService;
+  }
+
+  @Post()
+  @Bind(Body())
+  async generatePersonalCode(body) {
+    const { gender, dob } = body;
+    const newPersonalCode = await this.personalCodeService.generatePersonalCode(gender, dob);
+    return `Generated Personal Code: ${newPersonalCode}`;
   }
 
   @Get(':code')
