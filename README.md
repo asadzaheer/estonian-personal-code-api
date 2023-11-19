@@ -21,3 +21,31 @@ $ npm run start
 # watch mode
 $ npm run start:dev
 ```
+
+You can access API at `http://localhost:3000`
+
+## Route
+
+#### Create Personal Code
+Generate personal code when Gender and DoB provided.
+
+**URL** `/personal-code`
+
+**Method** `POST`
+
+**Body Params** 
+
+```Json
+{ "gender": "MALE/FEMALE", "dob": "dd.mm.yyyy" }
+```
+
+#### Validate Personal code
+Validate provided personal code
+
+**URL** `/personal-code/:code`
+
+**Method** `GET`
+
+**Query Param**
+
+personal code 11 digit number
