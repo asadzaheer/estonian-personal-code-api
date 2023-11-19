@@ -13,6 +13,7 @@ import {
   getControlNumber,
   getGenderFromGenderDigit,
   getDobFromPersonalCode,
+  validateData,
 } from './helpers';
 
 @Injectable()
@@ -39,6 +40,8 @@ export class PersonalCodeService {
     return true;
   }
   async generatePersonalCode(gender, dob) {
+    validateData(gender, dob);
+
     const [day, month, year] = dob.split('.');
     const genderDigits = getGenderDigits(gender, year);
     const formattedDob = `${year.slice(2)}${month}${day}`;

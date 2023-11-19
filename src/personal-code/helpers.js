@@ -1,3 +1,5 @@
+import { HttpException, HttpStatus } from '@nestjs/common';
+
 export function getGenderDigits(gender, year) {
   if (year >= 1800 && year <= 1899) {
     return { MALE: 1, FEMALE: 2 };
@@ -83,4 +85,27 @@ function getFullYear(genderDigit, year) {
   }
 
   return year;
+}
+
+export function validateData(gender, dob) {
+  if (!gender || !dob) {
+    throw new HttpException(
+      'Gender and DoB are required',
+      HttpStatus.BAD_REQUEST,
+    );
+  }
+
+  if (!['MALE', 'FEMALE'].includes(gender)) {
+    throw new HttpException(
+      'Gender must be MALE or FEMALE',
+      HttpStatus.BAD_REQUEST,
+    );
+  }
+
+  if (!dob.split('.') || dob.split('.').length < 3) {
+    throw new HttpException(
+      'DoB must be of format dd.mm.yyyy',
+      HttpStatus.BAD_REQUEST,
+    );
+  }
 }
